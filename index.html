@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Seguimiento de Ofrecimientos a Clientes</title>
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    
+    <!-- Hoja de estilos personalizados -->
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body class="text-gray-800">
+
+    <!-- Pantalla de Login -->
+    <div id="login-view" class="flex items-center justify-center min-h-screen bg-gray-100 p-4">
+        <div class="p-8 max-w-sm w-full bg-white rounded-xl shadow-lg space-y-6">
+            <div>
+                <h2 class="text-center text-3xl font-bold text-gray-900">Bienvenido</h2>
+                <p class="mt-2 text-center text-sm text-gray-600">Inicia sesión para continuar</p>
+            </div>
+            <button id="login-button" class="w-full flex justify-center py-3 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
+                Ingresar como Asesor
+            </button>
+        </div>
+    </div>
+
+    <!-- Vista Principal de la Aplicación -->
+    <div id="app-view" class="hidden">
+        <!-- Encabezado responsivo -->
+        <header class="bg-white shadow-md sticky top-0 z-10">
+            <div class="container mx-auto px-4 sm:px-6 lg:px-8">
+                <div class="flex flex-wrap justify-between items-center gap-y-2 py-4">
+                    <h1 class="text-xl sm:text-2xl font-bold text-indigo-600 whitespace-nowrap">Gestor de Ofrecimientos</h1>
+                    <div class="flex items-center gap-3 sm:gap-4">
+                        <span id="user-info" class="text-xs sm:text-sm text-gray-600 text-right"></span>
+                        <button id="logout-button" class="text-xs sm:text-sm font-medium text-red-600 hover:text-red-800 whitespace-nowrap bg-red-100 hover:bg-red-200 px-3 py-1.5 rounded-lg transition">Cerrar Sesión</button>
+                    </div>
+                </div>
+            </div>
+        </header>
+
+        <!-- Contenido Principal -->
+        <main class="container mx-auto p-4 sm:p-6 lg:p-8">
+            
+            <!-- Formulario responsivo -->
+            <div class="bg-white p-4 sm:p-6 rounded-xl shadow-lg mb-8 fade-in">
+                <h2 class="text-xl font-semibold mb-4">Añadir Nuevo Cliente</h2>
+                <form id="add-client-form" class="space-y-4">
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <input type="text" id="client-name-input" placeholder="Nombre del Cliente o Empresa" required class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500">
+                        <input type="text" id="client-ruc-input" placeholder="RUC del Cliente" required class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500">
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-2">Valores Agregados Ofrecidos:</label>
+                        <div class="flex flex-wrap gap-x-6 gap-y-2">
+                            <label class="inline-flex items-center">
+                                <input type="checkbox" class="valor-agregado-checkbox h-4 w-4 text-indigo-600 border-gray-300 rounded focus:ring-indigo-500" value="LiderControl">
+                                <span class="ml-2 text-gray-700">LiderControl</span>
+                            </label>
+                            <label class="inline-flex items-center">
+                                <input type="checkbox" class="valor-agregado-checkbox h-4 w-4 text-indigo-600 border-gray-300 rounded focus:ring-indigo-500" value="Smartpanics">
+                                <span class="ml-2 text-gray-700">Smartpanics</span>
+                            </label>
+                            <label class="inline-flex items-center">
+                                <input type="checkbox" class="valor-agregado-checkbox h-4 w-4 text-indigo-600 border-gray-300 rounded focus:ring-indigo-500" value="Ronda de video">
+                                <span class="ml-2 text-gray-700">Ronda de video</span>
+                            </label>
+                        </div>
+                    </div>
+                    <button type="submit" class="w-full sm:w-auto bg-indigo-600 text-white font-semibold py-2 px-6 rounded-lg hover:bg-indigo-700 transition duration-300">
+                        Agregar Cliente
+                    </button>
+                </form>
+            </div>
+
+            <!-- Contenedor de Clientes con columnas responsivas -->
+            <div id="clients-container" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                <!-- Las tarjetas de los clientes se insertarán aquí dinámicamente -->
+            </div>
+
+            <!-- Mensaje cuando no hay clientes -->
+            <div id="no-clients-message" class="hidden text-center py-12">
+                <p class="text-gray-500 text-lg">Aún no has agregado ningún cliente.</p>
+                <p class="text-gray-400">Usa el formulario de arriba para empezar.</p>
+            </div>
+        </main>
+    </div>
+
+    <!-- Firebase SDKs -->
+    <script src="https://www.gstatic.com/firebasejs/10.9.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.9.0/firebase-firestore-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.9.0/firebase-auth-compat.js"></script>
+    
+    <!-- Archivo de configuración de Firebase -->
+    <script src="firebase-config.js"></script>
+
+    <!-- Lógica de la aplicación -->
+    <script src="app.js"></script>
+</body>
+</html>

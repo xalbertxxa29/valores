@@ -1,0 +1,43 @@
+/*
+  styles.css
+  Hoja de estilos personalizados para el sistema de seguimiento.
+*/
+
+body {
+    font-family: 'Inter', sans-serif;
+    background-color: #f3f4f6; /* Gris claro de fondo */
+}
+
+/* Animación para la aparición de elementos */
+.fade-in {
+    animation: fadeIn 0.5s ease-in-out;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(-10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Estilo para el scrollbar (opcional, pero mejora la estética) */
+::-webkit-scrollbar {
+    width: 8px;
+}
+
+::-webkit-scrollbar-track {
+    background: #f1f1f1;
+}
+
+::-webkit-scrollbar-thumb {
+    background: #888;
+    border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: #555;
+}
