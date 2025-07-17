@@ -1,43 +1,163 @@
 /*
   styles.css
-  Hoja de estilos personalizados para el sistema de seguimiento.
+  Hoja de estilos para la PWA Gestor de Ofrecimientos v2025.
 */
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
 
 body {
     font-family: 'Inter', sans-serif;
-    background-color: #f3f4f6; /* Gris claro de fondo */
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
 }
 
-/* Animación para la aparición de elementos */
-.fade-in {
-    animation: fadeIn 0.5s ease-in-out;
+.aurora-background {
+    background-color: #0f172a;
+    position: relative;
+    overflow-x: hidden;
+    min-height: 100vh;
 }
 
-@keyframes fadeIn {
-    from {
-        opacity: 0;
-        transform: translateY(-10px);
-    }
-    to {
-        opacity: 1;
-        transform: translateY(0);
-    }
+.aurora-background::before, .aurora-background::after {
+    content: '';
+    position: fixed;
+    z-index: -1;
+    width: 60vmax;
+    height: 60vmax;
+    border-radius: 50%;
+    filter: blur(100px);
+    opacity: 0.15;
+    animation: move-aurora 20s linear infinite;
 }
 
-/* Estilo para el scrollbar (opcional, pero mejora la estética) */
-::-webkit-scrollbar {
-    width: 8px;
+.aurora-background::before {
+    background: radial-gradient(circle, #06b6d4, transparent 60%);
+    top: -20%; left: -10%;
 }
 
-::-webkit-scrollbar-track {
-    background: #f1f1f1;
+.aurora-background::after {
+    background: radial-gradient(circle, #8b5cf6, transparent 60%);
+    bottom: -20%; right: -10%;
+    animation-delay: -10s;
 }
 
-::-webkit-scrollbar-thumb {
-    background: #888;
-    border-radius: 4px;
+@keyframes move-aurora {
+    0%, 100% { transform: translate(0, 0) rotate(0deg); }
+    25% { transform: translate(40px, -60px) rotate(90deg); }
+    50% { transform: translate(-20px, 80px) rotate(180deg); }
+    75% { transform: translate(-40px, -40px) rotate(270deg); }
 }
 
-::-webkit-scrollbar-thumb:hover {
-    background: #555;
+.glass-card, .glass-header {
+    background-color: rgba(30, 41, 59, 0.6);
+    -webkit-backdrop-filter: blur(12px);
+    backdrop-filter: blur(12px);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 1rem;
+    box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.3);
+}
+
+.glass-header { border-radius: 0; }
+
+.btn-primary, .btn-secondary, .btn-danger {
+    padding: 0.75rem 1.5rem;
+    border-radius: 0.5rem;
+    font-weight: 600;
+    transition: all 0.2s ease-in-out;
+    transform-origin: center;
+    cursor: pointer;
+}
+.btn-primary { background-color: #06b6d4; color: #fff; }
+.btn-primary:hover { background-color: #0891b2; transform: scale(1.05); }
+.btn-secondary { background-color: rgba(51, 65, 85, 0.8); color: #fff; }
+.btn-secondary:hover { background-color: #334155; transform: scale(1.05); }
+.btn-danger { background-color: #ef4444; color: #fff; }
+.btn-danger:hover { background-color: #dc2626; transform: scale(1.05); }
+
+.btn-view {
+    padding: 0.5rem 1rem;
+    border-radius: 0.5rem;
+    font-weight: 600;
+    background-color: rgba(51, 65, 85, 0.8);
+    color: #fff;
+    border: 2px solid transparent;
+    transition: all 0.2s ease-in-out;
+    cursor: pointer;
+}
+.btn-view:hover { background-color: #334155; }
+.btn-view.active {
+    border-color: #06b6d4;
+    color: #06b6d4;
+}
+
+.form-input, .form-input-sm {
+    background-color: rgba(203, 213, 225, 0.9);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    border-radius: 0.5rem;
+    width: 100%;
+    color: #1e293b;
+    transition: all 0.2s ease-in-out;
+}
+.form-input { padding: 0.65rem 1rem; }
+.form-input-sm { font-size: 0.875rem; padding: 0.5rem 0.75rem; }
+.form-input::placeholder, .form-input-sm::placeholder { color: #64748b; }
+.form-input:focus, .form-input-sm:focus {
+    outline: none;
+    box-shadow: 0 0 0 3px rgba(6, 182, 212, 0.5);
+    border-color: #06b6d4;
+}
+
+.form-checkbox {
+    height: 1.15rem; width: 1.15rem; border-radius: 0.25rem;
+    border-color: rgba(255, 255, 255, 0.3);
+    background-color: rgba(203, 213, 225, 0.9);
+    color: #06b6d4;
+    cursor: pointer;
+}
+.form-checkbox:focus {
+    outline: none;
+    box-shadow: 0 0 0 3px rgba(6, 182, 212, 0.5);
+}
+
+.offering-display-item {
+    background-color: rgba(226, 232, 240, 0.8);
+    border-radius: 0.5rem;
+    padding: 0.75rem;
+}
+.offering-display-item, .offering-display-item span, .offering-display-item p { color: #334155; }
+.offering-display-item strong { color: #0f172a; }
+.offering-display-item strong.text-cyan-400 { color: #06b6d4 !important; }
+
+.loader {
+    width: 50px;
+    height: 50px;
+    border: 5px solid #475569;
+    border-top-color: #06b6d4;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+}
+@keyframes spin { to { transform: rotate(360deg); } }
+
+.scale-up-center { animation: scale-up-center 0.4s cubic-bezier(0.390, 0.575, 0.565, 1.000) both; }
+@keyframes scale-up-center { from { transform: scale(0.5); opacity: 0; } to { transform: scale(1); opacity: 1; } }
+.card-enter-animation { animation: scale-up-center 0.5s ease-out both; }
+
+/* ... (tu CSS existente) ... */
+
+/* --- Estilos para Botones de Navegación en el Inicio --- */
+.btn-view-nav {
+    padding: 1.25rem;
+    border-radius: 1rem;
+    font-weight: 700;
+    font-size: 1.1rem;
+    text-align: center;
+    background-color: rgba(51, 65, 85, 0.8);
+    color: #fff;
+    border: 1px solid var(--border-color);
+    transition: all 0.2s ease-in-out;
+    cursor: pointer;
+}
+.btn-view-nav:hover {
+    background-color: #334155;
+    transform: translateY(-5px);
+    box-shadow: 0 0 20px rgba(6, 182, 212, 0.5);
 }

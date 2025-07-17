@@ -3,105 +3,118 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Seguimiento de Ofrecimientos a Clientes</title>
+    <title>Valores Agregados Liderman</title>
     
-    <!-- Tailwind CSS -->
+    <link rel="manifest" href="manifest.json">
+    <meta name="theme-color" content="#06b6d4">
+
     <script src="https://cdn.tailwindcss.com"></script>
     
-    <!-- Google Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     
-    <!-- Hoja de estilos personalizados -->
+    <!-- Font Awesome para el ícono de "volver" -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    
     <link rel="stylesheet" href="styles.css">
 </head>
-<body class="text-gray-800">
+<body class="bg-slate-900 text-slate-200 aurora-background">
 
-    <!-- Pantalla de Login -->
-    <div id="login-view" class="flex items-center justify-center min-h-screen bg-gray-100 p-4">
-        <div class="p-8 max-w-sm w-full bg-white rounded-xl shadow-lg space-y-6">
-            <div>
-                <h2 class="text-center text-3xl font-bold text-gray-900">Bienvenido</h2>
-                <p class="mt-2 text-center text-sm text-gray-600">Inicia sesión para continuar</p>
-            </div>
-            <button id="login-button" class="w-full flex justify-center py-3 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
-                Ingresar como Asesor
-            </button>
+    <!-- Vista de Login -->
+    <div id="login-view" class="flex items-center justify-center min-h-screen p-4">
+        <div class="glass-card w-full max-w-sm p-8 space-y-6 text-center">
+            <h2 class="text-3xl font-bold text-white">Valores Agregados</h2>
+            <p class="text-slate-300">Inicia sesión para gestionar tus ofrecimientos.</p>
+            <button id="login-button" class="btn-primary w-full">Ingresar como Asesor</button>
         </div>
     </div>
 
     <!-- Vista Principal de la Aplicación -->
     <div id="app-view" class="hidden">
-        <!-- Encabezado responsivo -->
-        <header class="bg-white shadow-md sticky top-0 z-10">
-            <div class="container mx-auto px-4 sm:px-6 lg:px-8">
-                <div class="flex flex-wrap justify-between items-center gap-y-2 py-4">
-                    <h1 class="text-xl sm:text-2xl font-bold text-indigo-600 whitespace-nowrap">Gestor de Ofrecimientos</h1>
-                    <div class="flex items-center gap-3 sm:gap-4">
-                        <span id="user-info" class="text-xs sm:text-sm text-gray-600 text-right"></span>
-                        <button id="logout-button" class="text-xs sm:text-sm font-medium text-red-600 hover:text-red-800 whitespace-nowrap bg-red-100 hover:bg-red-200 px-3 py-1.5 rounded-lg transition">Cerrar Sesión</button>
-                    </div>
+        <header class="sticky top-0 z-20 glass-header">
+            <div class="container mx-auto px-4 sm:px-6 lg:px-8 flex justify-between items-center py-4">
+                <h1 class="text-xl sm:text-2xl font-bold text-white">Gestor de Ofrecimientos</h1>
+                <div class="flex items-center gap-4">
+                    <span id="user-info" class="text-xs sm:text-sm text-slate-400 text-right"></span>
+                    <button id="logout-button" class="btn-secondary">Cerrar Sesión</button>
                 </div>
             </div>
         </header>
 
-        <!-- Contenido Principal -->
         <main class="container mx-auto p-4 sm:p-6 lg:p-8">
-            
-            <!-- Formulario responsivo -->
-            <div class="bg-white p-4 sm:p-6 rounded-xl shadow-lg mb-8 fade-in">
-                <h2 class="text-xl font-semibold mb-4">Añadir Nuevo Cliente</h2>
-                <form id="add-client-form" class="space-y-4">
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                        <input type="text" id="client-name-input" placeholder="Nombre del Cliente o Empresa" required class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500">
-                        <input type="text" id="client-ruc-input" placeholder="RUC del Cliente" required class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500">
-                    </div>
-                    <div>
-                        <label class="block text-sm font-medium text-gray-700 mb-2">Valores Agregados Ofrecidos:</label>
-                        <div class="flex flex-wrap gap-x-6 gap-y-2">
-                            <label class="inline-flex items-center">
-                                <input type="checkbox" class="valor-agregado-checkbox h-4 w-4 text-indigo-600 border-gray-300 rounded focus:ring-indigo-500" value="LiderControl">
-                                <span class="ml-2 text-gray-700">LiderControl</span>
-                            </label>
-                            <label class="inline-flex items-center">
-                                <input type="checkbox" class="valor-agregado-checkbox h-4 w-4 text-indigo-600 border-gray-300 rounded focus:ring-indigo-500" value="Smartpanics">
-                                <span class="ml-2 text-gray-700">Smartpanics</span>
-                            </label>
-                            <label class="inline-flex items-center">
-                                <input type="checkbox" class="valor-agregado-checkbox h-4 w-4 text-indigo-600 border-gray-300 rounded focus:ring-indigo-500" value="Ronda de video">
-                                <span class="ml-2 text-gray-700">Ronda de video</span>
-                            </label>
+
+            <!-- ================================================== -->
+            <!-- VISTA DE INICIO (Formulario y Navegación)          -->
+            <!-- ================================================== -->
+            <div id="home-view">
+                <div class="glass-card p-4 sm:p-6 mb-8">
+                    <h2 class="text-xl font-semibold mb-4 text-white">Añadir Nuevo Cliente</h2>
+                    <form id="add-client-form" class="space-y-6">
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            <input type="text" id="client-name-input" placeholder="Nombre del Cliente o Empresa" required class="form-input">
+                            <input type="text" id="client-ruc-input" placeholder="RUC del Cliente" required class="form-input">
                         </div>
-                    </div>
-                    <button type="submit" class="w-full sm:w-auto bg-indigo-600 text-white font-semibold py-2 px-6 rounded-lg hover:bg-indigo-700 transition duration-300">
-                        Agregar Cliente
+                        <div id="offerings-container" class="grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-4 pt-4 border-t border-slate-700">
+                            <!-- Llenado dinámicamente por JS -->
+                        </div>
+                        <button type="submit" class="btn-primary w-full sm:w-auto">Agregar Cliente</button>
+                    </form>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <button id="go-to-pending-btn" class="btn-view-nav">Ver Solicitudes Pendientes</button>
+                    <button id="go-to-won-btn" class="btn-view-nav">Ver Clientes Ganados</button>
+                </div>
+            </div>
+
+            <!-- ================================================== -->
+            <!-- VISTA DE LISTAS (Contenido dinámico)               -->
+            <!-- ================================================== -->
+            <div id="list-view" class="hidden">
+                <div class="flex flex-wrap justify-between items-center gap-4 mb-6">
+                    <h2 id="list-title" class="text-2xl font-bold text-white"></h2>
+                    <button id="back-to-home-btn" class="btn-secondary">
+                        <i class="fas fa-arrow-left mr-2"></i>Volver al Inicio
                     </button>
-                </form>
+                </div>
+                <div id="clients-container" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"></div>
+                <div id="no-clients-message" class="hidden text-center py-12">
+                    <p class="text-slate-400 text-lg"></p>
+                    <p class="text-slate-500 text-sm">Usa el formulario de inicio para empezar.</p>
+                </div>
             </div>
 
-            <!-- Contenedor de Clientes con columnas responsivas -->
-            <div id="clients-container" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                <!-- Las tarjetas de los clientes se insertarán aquí dinámicamente -->
-            </div>
-
-            <!-- Mensaje cuando no hay clientes -->
-            <div id="no-clients-message" class="hidden text-center py-12">
-                <p class="text-gray-500 text-lg">Aún no has agregado ningún cliente.</p>
-                <p class="text-gray-400">Usa el formulario de arriba para empezar.</p>
-            </div>
         </main>
     </div>
 
-    <!-- Firebase SDKs -->
+    <!-- Modals y Overlays -->
+    <div id="loading-overlay" class="hidden fixed inset-0 bg-black bg-opacity-70 z-50 flex justify-center items-center">
+        <div class="loader"></div>
+    </div>
+    <div id="success-modal" class="hidden fixed inset-0 bg-black bg-opacity-70 z-50 flex justify-center items-center p-4">
+        <div class="glass-card p-8 rounded-2xl w-full max-w-md text-center scale-up-center">
+            <h3 class="text-lg font-bold text-cyan-400 mb-4">¡Éxito!</h3>
+            <p id="success-message" class="text-slate-300 mb-6"></p>
+            <button id="success-ok-btn" class="btn-primary">Aceptar</button>
+        </div>
+    </div>
+    <div id="confirmation-modal" class="hidden fixed inset-0 bg-black bg-opacity-70 z-50 flex justify-center items-center p-4">
+        <div class="glass-card p-6 rounded-2xl w-full max-w-md text-center scale-up-center">
+            <h3 id="modal-title" class="text-lg font-bold text-white mb-2"></h3>
+            <p id="modal-message" class="text-slate-300 mb-6"></p>
+            <div class="flex justify-center gap-4">
+                <button id="modal-cancel-btn" class="btn-secondary">Cancelar</button>
+                <button id="modal-confirm-btn" class="btn-danger">Confirmar</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Scripts -->
     <script src="https://www.gstatic.com/firebasejs/10.9.0/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.9.0/firebase-firestore-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.9.0/firebase-auth-compat.js"></script>
-    
-    <!-- Archivo de configuración de Firebase -->
     <script src="firebase-config.js"></script>
-
-    <!-- Lógica de la aplicación -->
     <script src="app.js"></script>
 </body>
 </html>
