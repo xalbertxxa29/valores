@@ -224,7 +224,7 @@ document.addEventListener("DOMContentLoaded", () => {
         });
     }
 
-    addClientForm.addEventListener("submit", async (e) => {
+   addClientForm.addEventListener("submit", async (e) => {
         e.preventDefault();
         showLoading(true);
 
@@ -249,11 +249,22 @@ document.addEventListener("DOMContentLoaded", () => {
             return;
         }
 
+        // Obtenemos el usuario actual para acceder a su email
+        const currentUser = auth.currentUser;
+        if (!currentUser) {
+            showLoading(false);
+            showConfirmationModal("Error", "No se ha podido identificar al usuario. Por favor, inicia sesión de nuevo.");
+            return;
+        }
+
         try {
             await db.collection("users").doc(currentUserId).collection("clients").add({
-                name: clientName, ruc: clientRuc,
-                clientStatus: "Ofrecido", offerings: newOfferings,
+                name: clientName,
+                ruc: clientRuc,
+                clientStatus: "Ofrecido",
+                offerings: newOfferings,
                 createdAt: firebase.firestore.FieldValue.serverTimestamp(),
+                creadoPor: currentUser.email // <-- AQUÍ SE GUARDA EL EMAIL
             });
             addClientForm.reset();
             offeringsContainer.querySelectorAll(".offering-details").forEach(d => d.classList.add("hidden"));
