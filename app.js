@@ -19,31 +19,34 @@ document.addEventListener("DOMContentLoaded", () => {
     const auth = firebase.auth();
 
     // --- REFERENCIAS AL DOM (ACTUALIZADAS) ---
-    const loginView = document.getElementById("login-view");
-    const appView = document.getElementById("app-view");
-    const loginButton = document.getElementById("login-button");
-    const logoutButton = document.getElementById("logout-button");
-    const userInfo = document.getElementById("user-info");
+    const authView = document.getElementById("auth-view");
+    const loginContainer = document.getElementById("login-container");
+    const registerContainer = document.getElementById("register-container");
+    const loginForm = document.getElementById("login-form");
+    const registerForm = document.getElementById("register-form");
+    const goToRegisterBtn = document.getElementById("go-to-register");
+    const goToLoginBtn = document.getElementById("go-to-login");
 
-    // Vistas principales
+    const appView = document.getElementById("app-view");
+    const userInfo = document.getElementById("user-info");
+    const logoutButton = document.getElementById("logout-button");
+    
     const homeView = document.getElementById("home-view");
     const listView = document.getElementById("list-view");
-
-    // Elementos de la vista de inicio
+    
     const addClientForm = document.getElementById("add-client-form");
     const clientNameInput = document.getElementById("client-name-input");
     const clientRucInput = document.getElementById("client-ruc-input");
     const offeringsContainer = document.getElementById("offerings-container");
+    
     const goToPendingBtn = document.getElementById("go-to-pending-btn");
     const goToWonBtn = document.getElementById("go-to-won-btn");
 
-    // Elementos de la vista de listas
     const listTitle = document.getElementById("list-title");
     const backToHomeBtn = document.getElementById("back-to-home-btn");
     const clientsContainer = document.getElementById("clients-container");
     const noClientsMessage = document.getElementById("no-clients-message");
 
-    // Modals y Overlays
     const loadingOverlay = document.getElementById("loading-overlay");
     const successModal = document.getElementById("success-modal");
     const successMessage = document.getElementById("success-message");
@@ -64,6 +67,73 @@ document.addEventListener("DOMContentLoaded", () => {
         "Valores Agregados": ["Plan de Responsabilidad Social", "Auditoría Interna", "Reporte de Criminalidad"],
         "Valores Agregados con Tecnología": ["LiderControl", "SmartPanics", "Integración de plataformas GPS", "Pulsadores de pánico", "Configuración de analítica", "Ciberseguridad"]
     };
+
+    // --- LÓGICA DE AUTENTICACIÓN ---
+    goToRegisterBtn.addEventListener('click', () => {
+        loginContainer.classList.add('hidden');
+        registerContainer.classList.remove('hidden');
+    });
+
+    goToLoginBtn.addEventListener('click', () => {
+        registerContainer.classList.add('hidden');
+        loginContainer.classList.remove('hidden');
+    });
+
+    loginForm.addEventListener('submit', (e) => {
+        e.preventDefault();
+        showLoading(true);
+        const email = loginForm['login-email'].value;
+        const password = loginForm['login-password'].value;
+
+        auth.signInWithEmailAndPassword(email, password)
+            .catch(error => {
+                console.error("Error de inicio de sesión:", error);
+                showConfirmationModal("Error de Inicio de Sesión", getAuthErrorMessage(error.code));
+            })
+            .finally(() => showLoading(false));
+    });
+
+    registerForm.addEventListener('submit', (e) => {
+        e.preventDefault();
+        const email = registerForm['register-email'].value;
+        const password = registerForm['register-password'].value;
+
+        if (!email.endsWith('@liderman.com.pe')) {
+            showConfirmationModal("Registro No Permitido", "Solo se permite el registro con un correo corporativo (@liderman.com.pe).");
+            return;
+        }
+
+        showLoading(true);
+        auth.createUserWithEmailAndPassword(email, password)
+            .then(userCredential => {
+                showSuccessModal("¡Usuario registrado con éxito! Ahora puedes iniciar sesión.");
+                registerForm.reset();
+                goToLoginBtn.click();
+            })
+            .catch(error => {
+                console.error("Error de registro:", error);
+                showConfirmationModal("Error de Registro", getAuthErrorMessage(error.code));
+            })
+            .finally(() => showLoading(false));
+    });
+
+    auth.onAuthStateChanged((user) => {
+        if (user) {
+            currentUserId = user.uid;
+            authView.classList.add("hidden");
+            appView.classList.remove("hidden");
+            userInfo.textContent = user.email;
+            initializeForm();
+            showView('home');
+        } else {
+            currentUserId = null;
+            authView.classList.remove("hidden");
+            appView.classList.add("hidden");
+            if (clientsListener) clientsListener();
+        }
+    });
+
+    logoutButton.addEventListener("click", () => auth.signOut());
 
     // --- LÓGICA DE NAVEGACIÓN ---
     function showView(viewName) {
@@ -87,7 +157,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
     backToHomeBtn.addEventListener('click', () => {
         if (clientsListener) {
-            clientsListener(); // Detiene la escucha de datos para ahorrar recursos
+            clientsListener();
             clientsListener = null;
         }
         showView('home');
@@ -114,29 +184,6 @@ document.addEventListener("DOMContentLoaded", () => {
     modalCancelBtn.addEventListener("click", () => {
         confirmationModal.classList.add("hidden");
         if (resolveConfirmation) resolveConfirmation(false);
-    });
-
-    // --- LÓGICA DE AUTENTICACIÓN ---
-    auth.onAuthStateChanged((user) => {
-        if (user) {
-            currentUserId = user.uid;
-            loginView.classList.add("hidden");
-            appView.classList.remove("hidden");
-            userInfo.innerHTML = `<span class="hidden sm:inline">Asesor ID:</span> ${user.uid.substring(0, 6)}...`;
-            initializeForm();
-            showView('home'); // Siempre empezar en la vista de inicio
-        } else {
-            currentUserId = null;
-            loginView.classList.remove("hidden");
-            appView.classList.add("hidden");
-            if (clientsListener) clientsListener();
-        }
-    });
-
-    loginButton.addEventListener("click", () => auth.signInAnonymously().catch(console.error));
-    logoutButton.addEventListener("click", () => {
-        auth.signOut();
-        showView('home'); // Al cerrar sesión, volver a la vista de inicio (que estará oculta)
     });
 
     // --- LÓGICA PRINCIPAL DE DATOS ---
@@ -347,5 +394,22 @@ document.addEventListener("DOMContentLoaded", () => {
         const cost = parseFloat(detailsContainer.querySelector('.offering-cost').value) || 0;
         const totalField = detailsContainer.querySelector('.offering-total');
         totalField.value = `S/ ${((cost * quantity) * frequency).toFixed(2)}`;
+    }
+
+    function getAuthErrorMessage(errorCode) {
+        switch (errorCode) {
+            case 'auth/wrong-password':
+                return 'La contraseña es incorrecta. Por favor, inténtalo de nuevo.';
+            case 'auth/user-not-found':
+                return 'No se encontró ningún usuario con este correo electrónico.';
+            case 'auth/invalid-email':
+                return 'El formato del correo electrónico no es válido.';
+            case 'auth/email-already-in-use':
+                return 'Este correo electrónico ya está registrado.';
+            case 'auth/weak-password':
+                return 'La contraseña debe tener al menos 6 caracteres.';
+            default:
+                return 'Ocurrió un error inesperado. Por favor, inténtalo de nuevo.';
+        }
     }
 });
