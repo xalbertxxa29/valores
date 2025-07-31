@@ -20,17 +20,11 @@
 </head>
 <body class="bg-slate-900 text-slate-200 aurora-background">
 
-    <!-- Vista de Autenticación (Contiene Login y Registro) -->
     <div id="auth-view" class="flex items-center justify-center min-h-screen p-4">
         <div class="glass-card w-full max-w-sm p-8 space-y-6">
-            
-            <!-- INICIO DE LA MODIFICACIÓN: Imagen añadida -->
             <div class="flex justify-center">
                 <img src="icon-192x192.jpeg" alt="Logo de la Empresa" class="h-24 w-24 rounded-full border-2 border-slate-500">
             </div>
-            <!-- FIN DE LA MODIFICACIÓN -->
-
-            <!-- Formulario de Login (Visible por defecto) -->
             <div id="login-container">
                 <h2 class="text-2xl font-bold text-white text-center">Iniciar Sesión</h2>
                 <form id="login-form" class="mt-6 space-y-4">
@@ -43,8 +37,6 @@
                     <button id="go-to-register" class="font-semibold text-cyan-400 hover:text-cyan-300">Regístrate aquí</button>
                 </p>
             </div>
-
-            <!-- Formulario de Registro (Oculto por defecto) -->
             <div id="register-container" class="hidden">
                 <h2 class="text-2xl font-bold text-white text-center">Crear Cuenta</h2>
                 <form id="register-form" class="mt-6 space-y-4">
@@ -57,11 +49,9 @@
                     <button id="go-to-login" class="font-semibold text-cyan-400 hover:text-cyan-300">Inicia sesión</button>
                 </p>
             </div>
-            
         </div>
     </div>
 
-    <!-- Vista Principal de la Aplicación -->
     <div id="app-view" class="hidden">
         <header class="sticky top-0 z-20 glass-header">
             <div class="container mx-auto px-4 sm:px-6 lg:px-8 flex justify-between items-center py-4">
@@ -74,20 +64,34 @@
         </header>
 
         <main class="container mx-auto p-4 sm:p-6 lg:p-8">
-
-            <!-- VISTA DE INICIO (Formulario y Navegación) -->
             <div id="home-view">
                 <div class="glass-card p-4 sm:p-6 mb-8">
-                    <h2 class="text-xl font-semibold mb-4 text-white">Añadir Nuevo Cliente</h2>
                     <form id="add-client-form" class="space-y-6">
+                        <h2 class="text-xl font-semibold text-white">Añadir Nuevo Cliente</h2>
                         <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                             <input type="text" id="client-name-input" placeholder="Nombre del Cliente o Empresa" required class="form-input">
                             <input type="text" id="client-ruc-input" placeholder="RUC del Cliente" required class="form-input">
                         </div>
-                        <div id="offerings-container" class="grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-4 pt-4 border-t border-slate-700">
-                            <!-- Llenado dinámicamente por JS -->
+                        
+                        <div class="border-t border-slate-700 pt-4">
+                            <div class="flex justify-between items-center mb-4">
+                                <h3 class="text-md font-semibold text-white">Valores Agregados Vigilancia</h3>
+                                <button type="button" id="add-vigilancia-row-btn" class="btn-secondary text-xs py-1 px-3 flex items-center gap-2"><i class="fas fa-plus"></i>Añadir</button>
+                            </div>
+                            <div id="vigilancia-offerings-container" class="space-y-4">
+                                </div>
                         </div>
-                        <button type="submit" class="btn-primary w-full sm:w-auto">Agregar Cliente</button>
+
+                        <div class="border-t border-slate-700 pt-4">
+                            <div class="flex justify-between items-center mb-4">
+                                <h3 class="text-md font-semibold text-white">Valores Agregados con Tecnología</h3>
+                                <button type="button" id="add-tecnologia-row-btn" class="btn-secondary text-xs py-1 px-3 flex items-center gap-2"><i class="fas fa-plus"></i>Añadir</button>
+                            </div>
+                            <div id="tecnologia-offerings-container" class="space-y-4">
+                                </div>
+                        </div>
+
+                        <button type="submit" class="btn-primary w-full sm:w-auto mt-4">Agregar Cliente</button>
                     </form>
                 </div>
 
@@ -97,7 +101,6 @@
                 </div>
             </div>
 
-            <!-- VISTA DE LISTAS (Contenido dinámico) -->
             <div id="list-view" class="hidden">
                 <div class="flex flex-wrap justify-between items-center gap-4 mb-6">
                     <h2 id="list-title" class="text-2xl font-bold text-white"></h2>
@@ -111,14 +114,13 @@
                     <p class="text-slate-500 text-sm">Usa el formulario de inicio para empezar.</p>
                 </div>
             </div>
-
         </main>
     </div>
 
-    <!-- Modals y Overlays -->
     <div id="loading-overlay" class="hidden fixed inset-0 bg-black bg-opacity-70 z-50 flex justify-center items-center">
         <div class="loader"></div>
     </div>
+    
     <div id="success-modal" class="hidden fixed inset-0 bg-black bg-opacity-70 z-50 flex justify-center items-center p-4">
         <div class="glass-card p-8 rounded-2xl w-full max-w-md text-center scale-up-center">
             <h3 class="text-lg font-bold text-cyan-400 mb-4">¡Éxito!</h3>
@@ -126,6 +128,7 @@
             <button id="success-ok-btn" class="btn-primary">Aceptar</button>
         </div>
     </div>
+    
     <div id="confirmation-modal" class="hidden fixed inset-0 bg-black bg-opacity-70 z-50 flex justify-center items-center p-4">
         <div class="glass-card p-6 rounded-2xl w-full max-w-md text-center scale-up-center">
             <h3 id="modal-title" class="text-lg font-bold text-white mb-2"></h3>
@@ -137,7 +140,44 @@
         </div>
     </div>
 
-    <!-- Scripts -->
+    <div id="edit-client-modal" class="hidden fixed inset-0 bg-black bg-opacity-70 z-40 flex justify-center items-center p-4 overflow-y-auto">
+        <div class="glass-card p-4 sm:p-6 rounded-2xl w-full max-w-2xl scale-up-center my-8">
+            <form id="edit-client-form" class="space-y-6">
+                <div class="flex justify-between items-center">
+                    <h2 class="text-xl font-semibold text-white">Editar Cliente</h2>
+                    <button type="button" id="close-edit-modal-btn" class="text-slate-400 hover:text-white text-2xl leading-none">&times;</button>
+                </div>
+                <input type="hidden" id="edit-client-id">
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <input type="text" id="edit-client-name-input" placeholder="Nombre del Cliente o Empresa" required class="form-input">
+                    <input type="text" id="edit-client-ruc-input" placeholder="RUC del Cliente" required class="form-input">
+                </div>
+                
+                <div class="border-t border-slate-700 pt-4">
+                    <div class="flex justify-between items-center mb-4">
+                        <h3 class="text-md font-semibold text-white">Valores Agregados Vigilancia</h3>
+                        <button type="button" id="edit-add-vigilancia-row-btn" class="btn-secondary text-xs py-1 px-3 flex items-center gap-2"><i class="fas fa-plus"></i>Añadir</button>
+                    </div>
+                    <div id="edit-vigilancia-offerings-container" class="space-y-4 max-h-48 overflow-y-auto pr-2">
+                        </div>
+                </div>
+
+                <div class="border-t border-slate-700 pt-4">
+                    <div class="flex justify-between items-center mb-4">
+                        <h3 class="text-md font-semibold text-white">Valores Agregados con Tecnología</h3>
+                        <button type="button" id="edit-add-tecnologia-row-btn" class="btn-secondary text-xs py-1 px-3 flex items-center gap-2"><i class="fas fa-plus"></i>Añadir</button>
+                    </div>
+                    <div id="edit-tecnologia-offerings-container" class="space-y-4 max-h-48 overflow-y-auto pr-2">
+                        </div>
+                </div>
+
+                <div class="flex justify-end gap-4 pt-4 border-t border-slate-700">
+                    <button type="button" id="cancel-edit-btn" class="btn-secondary">Cancelar</button>
+                    <button type="submit" class="btn-primary">Guardar Cambios</button>
+                </div>
+            </form>
+        </div>
+    </div>
     <script src="https://www.gstatic.com/firebasejs/10.9.0/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.9.0/firebase-firestore-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.9.0/firebase-auth-compat.js"></script>

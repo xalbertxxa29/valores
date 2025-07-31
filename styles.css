@@ -89,34 +89,34 @@ body {
     color: #06b6d4;
 }
 
-.form-input, .form-input-sm {
+.form-input, .form-input-sm, .form-select-sm {
     background-color: rgba(203, 213, 225, 0.9);
     border: 1px solid rgba(255, 255, 255, 0.2);
     border-radius: 0.5rem;
     width: 100%;
-    color: #eed8d8;
+    color: #0f172a; /* Texto oscuro para mejor legibilidad en fondo claro */
     transition: all 0.2s ease-in-out;
 }
 .form-input { padding: 0.65rem 1rem; }
-.form-input-sm { font-size: 0.875rem; padding: 0.5rem 0.75rem; }
+.form-input-sm, .form-select-sm { font-size: 0.875rem; padding: 0.5rem 0.75rem; }
+
 .form-input::placeholder, .form-input-sm::placeholder { color: #64748b; }
-.form-input:focus, .form-input-sm:focus {
+.form-input:focus, .form-input-sm:focus, .form-select-sm:focus {
     outline: none;
     box-shadow: 0 0 0 3px rgba(6, 182, 212, 0.5);
     border-color: #06b6d4;
 }
+.form-select-sm {
+    background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%236b7280' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='M6 8l4 4 4-4'/%3e%3c/svg%3e");
+    background-position: right 0.5rem center;
+    background-repeat: no-repeat;
+    background-size: 1.5em 1.5em;
+    padding-right: 2.5rem;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
+}
 
-.form-checkbox {
-    height: 1.15rem; width: 1.15rem; border-radius: 0.25rem;
-    border-color: rgba(255, 255, 255, 0.3);
-    background-color: rgba(203, 213, 225, 0.9);
-    color: #06b6d4;
-    cursor: pointer;
-}
-.form-checkbox:focus {
-    outline: none;
-    box-shadow: 0 0 0 3px rgba(6, 182, 212, 0.5);
-}
 
 .offering-display-item {
     background-color: rgba(226, 232, 240, 0.8);
@@ -125,13 +125,13 @@ body {
 }
 .offering-display-item, .offering-display-item span, .offering-display-item p { color: #334155; }
 .offering-display-item strong { color: #0f172a; }
-.offering-display-item strong.text-cyan-400 { color: #e20303 !important; }
+.offering-display-item strong.total-amount { color: #0891b2 !important; }
 
 .loader {
     width: 50px;
     height: 50px;
     border: 5px solid #475569;
-    border-top-color: #d40606;
+    border-top-color: #06b6d4;
     border-radius: 50%;
     animation: spin 1s linear infinite;
 }
@@ -141,9 +141,6 @@ body {
 @keyframes scale-up-center { from { transform: scale(0.5); opacity: 0; } to { transform: scale(1); opacity: 1; } }
 .card-enter-animation { animation: scale-up-center 0.5s ease-out both; }
 
-/* ... (tu CSS existente) ... */
-
-/* --- Estilos para Botones de Navegación en el Inicio --- */
 .btn-view-nav {
     padding: 1.25rem;
     border-radius: 1rem;
@@ -152,7 +149,7 @@ body {
     text-align: center;
     background-color: rgba(51, 65, 85, 0.8);
     color: #fff;
-    border: 1px solid var(--border-color);
+    border: 1px solid rgba(255, 255, 255, 0.1);
     transition: all 0.2s ease-in-out;
     cursor: pointer;
 }
@@ -160,4 +157,19 @@ body {
     background-color: #334155;
     transform: translateY(-5px);
     box-shadow: 0 0 20px rgba(6, 182, 212, 0.5);
+}
+
+/* Estilo para el botón de eliminar fila de ofrecimiento */
+.remove-offering-row-btn {
+    background-color: transparent;
+    color: #94a3b8;
+    border: none;
+    cursor: pointer;
+    padding: 0.25rem;
+    border-radius: 50%;
+    transition: all 0.2s ease;
+}
+.remove-offering-row-btn:hover {
+    color: #f43f5e;
+    background-color: rgba(244, 63, 94, 0.1);
 }
