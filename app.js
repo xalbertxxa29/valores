@@ -200,7 +200,7 @@ document.addEventListener("DOMContentLoaded", () => {
                     <option value="24" ${offeringData.frequency == 24 ? 'selected' : ''}>24 meses</option>
                     <option value="36" ${offeringData.frequency == 36 ? 'selected' : ''}>36 meses</option>
                 </select>
-                <input type="number" placeholder="Costo Mensual S/." class="form-input-sm offering-cost" min="0" step="0.01" value="${offeringData.cost || ''}">
+                <input type="number" placeholder="Costo de provision S/." class="form-input-sm offering-cost" min="0" step="0.01" value="${offeringData.cost || ''}">
                 <input type="text" placeholder="Total" class="form-input-sm bg-slate-700/80 offering-total" readonly value="S/ ${offeringData.total?.toFixed(2) || '0.00'}">
             </div>
             <input type="hidden" class="offering-category" value="${category}">
