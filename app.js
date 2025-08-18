@@ -193,6 +193,12 @@ document.addEventListener("DOMContentLoaded", () => {
             </div>
             <div class="grid grid-cols-2 md:grid-cols-4 gap-2">
                 <input type="number" placeholder="Cantidad" class="form-input-sm offering-quantity" min="1" step="1" value="${offeringData.quantity || 1}">
+                
+                <select class="form-select-sm offering-provision-mode">
+                    <option value="mensual" ${offeringData.provisionMode === 'mensual' ? 'selected' : ''}>Cobro Mensual</option>
+                    <option value="contrato" ${offeringData.provisionMode === 'contrato' ? 'selected' : ''}>Por todo el contrato</option>
+                </select>
+                
                 <select class="form-select-sm offering-frequency">
                     <option value="6" ${offeringData.frequency == 6 ? 'selected' : ''}>6 meses</option>
                     <option value="12" ${offeringData.frequency == 12 ? 'selected' : ''}>12 meses</option>
@@ -200,6 +206,7 @@ document.addEventListener("DOMContentLoaded", () => {
                     <option value="24" ${offeringData.frequency == 24 ? 'selected' : ''}>24 meses</option>
                     <option value="36" ${offeringData.frequency == 36 ? 'selected' : ''}>36 meses</option>
                 </select>
+
                 <input type="number" placeholder="Costo de provision S/." class="form-input-sm offering-cost" min="0" step="0.01" value="${offeringData.cost || ''}">
                 <input type="text" placeholder="Total" class="form-input-sm bg-slate-700/80 offering-total" readonly value="S/ ${offeringData.total?.toFixed(2) || '0.00'}">
             </div>
@@ -210,14 +217,21 @@ document.addEventListener("DOMContentLoaded", () => {
             const quantity = parseFloat(container.querySelector('.offering-quantity').value) || 0;
             const frequency = parseFloat(container.querySelector('.offering-frequency').value) || 0;
             const cost = parseFloat(container.querySelector('.offering-cost').value) || 0;
-            container.querySelector('.offering-total').value = `S/ ${((cost * quantity) * frequency).toFixed(2)}`;
+            const provisionMode = container.querySelector('.offering-provision-mode').value;
+            let total = 0;
+
+            if (provisionMode === 'contrato') {
+                total = cost * quantity;
+            } else { // 'mensual'
+                total = (cost * quantity) * frequency;
+            }
+            container.querySelector('.offering-total').value = `S/ ${total.toFixed(2)}`;
         };
 
-        wrapper.addEventListener('input', e => {
-            if (e.target.matches('.offering-quantity, .offering-frequency, .offering-cost')) {
-                calculateTotal(wrapper);
-            }
-        });
+        // Agregamos un listener para los eventos 'input' y 'change' en el contenedor principal
+        wrapper.addEventListener('input', () => calculateTotal(wrapper));
+        wrapper.addEventListener('change', () => calculateTotal(wrapper));
+
         wrapper.querySelector('.remove-offering-row-btn').addEventListener('click', () => wrapper.remove());
         
         return wrapper;
@@ -255,6 +269,7 @@ document.addEventListener("DOMContentLoaded", () => {
     // =================================================================================
     const AuthService = (() => {
         const { elements, showConfirmationModal, getAuthErrorMessage, toggleButtonLoading } = UI;
+        
         const handleLogin = (e) => {
             e.preventDefault();
             const button = e.submitter;
@@ -265,6 +280,7 @@ document.addEventListener("DOMContentLoaded", () => {
                 .catch(error => showConfirmationModal("Error de Inicio de Sesión", getAuthErrorMessage(error.code)))
                 .finally(() => toggleButtonLoading(button, false));
         };
+        
         const handleRegister = (e) => {
             e.preventDefault();
             const button = e.submitter;
@@ -284,12 +300,44 @@ document.addEventListener("DOMContentLoaded", () => {
                 .catch(error => showConfirmationModal("Error de Registro", getAuthErrorMessage(error.code)))
                 .finally(() => toggleButtonLoading(button, false));
         };
+
+            // REEMPLAZA ESTA FUNCIÓN COMPLETA EN app.js
+
+        const displayUserName = async (user) => {
+            // Por defecto, muestra el email mientras se buscan los datos
+            elements.userInfo.textContent = user.email;
+
+            try {
+                // 1. Extrae el usuario y lo convierte a mayúsculas
+                const username = user.email.split('@')[0];
+                const userDocId = username.toUpperCase();
+
+                // 2. Busca el documento en la colección 'usuarios'
+                const userDocRef = db.collection("usuarios").doc(userDocId);
+                const docSnap = await userDocRef.get();
+
+                // 3. Si el documento existe, extrae el nombre y lo muestra
+                // --- LÍNEA CORREGIDA ---
+                if (docSnap.exists && docSnap.data().NOMBRE) { // Se quitaron los paréntesis de .exists
+                    elements.userInfo.textContent = docSnap.data().NOMBRE;
+                } else {
+                    console.warn(`No se encontró un documento o el campo NOMBRE para el usuario: ${userDocId}`);
+                    elements.userInfo.textContent = user.email;
+                }
+            } catch (error) {
+                console.error("Error al obtener nombre de usuario:", error);
+                elements.userInfo.textContent = user.email;
+            }
+        };
+
         const handleAuthStateChange = (user) => {
             if (user) {
                 currentUserId = user.uid;
                 elements.authView.classList.add("hidden");
                 elements.appView.classList.remove("hidden");
-                elements.userInfo.textContent = user.email;
+                
+                displayUserName(user);
+
                 App.showView('home');
                 App.initializeForms();
             } else {
@@ -299,6 +347,7 @@ document.addEventListener("DOMContentLoaded", () => {
                 if (clientsListener) clientsListener();
             }
         };
+        
         const init = () => {
             elements.goToRegisterBtn.addEventListener('click', () => {
                 elements.loginContainer.classList.add('hidden');
@@ -351,7 +400,25 @@ document.addEventListener("DOMContentLoaded", () => {
                 const quantity = parseInt(row.querySelector('.offering-quantity').value) || 0;
                 const frequency = parseInt(row.querySelector('.offering-frequency').value) || 0;
                 const cost = parseFloat(row.querySelector('.offering-cost').value) || 0;
-                return { name: row.querySelector('.offering-name').value, category: row.querySelector('.offering-category').value, status: 'Ofrecido', progress: 0, quantity, frequency, cost, total: (cost * quantity) * frequency };
+                const provisionMode = row.querySelector('.offering-provision-mode').value;
+                let total = 0;
+
+                if (provisionMode === 'contrato') {
+                    total = cost * quantity;
+                } else { // 'mensual'
+                    total = (cost * quantity) * frequency;
+                }
+
+                return { 
+                    name: row.querySelector('.offering-name').value, 
+                    category: row.querySelector('.offering-category').value, 
+                    status: 'Ofrecido', 
+                    quantity, 
+                    frequency, 
+                    cost,
+                    provisionMode,
+                    total
+                };
             }).filter(offer => offer.name);
         };
 
@@ -443,18 +510,40 @@ document.addEventListener("DOMContentLoaded", () => {
             try {
                 const doc = await FirestoreService.getClient(currentUserId, clientId);
                 if (!doc.exists) throw new Error("Client not found");
+                
                 const clientData = doc.data();
+                const isWon = clientData.clientStatus === 'Ganado';
+
                 elements.editClientId.value = clientId;
                 elements.editClientNameInput.value = clientData.name;
                 elements.editClientRucInput.value = clientData.ruc;
-                initializeForms();
+                
+                elements.editVigilanciaOfferingsContainer.innerHTML = '';
+                elements.editTecnologiaOfferingsContainer.innerHTML = '';
+
                 if(clientData.offerings?.length > 0) {
                     clientData.offerings.forEach(offer => {
-                        const container = offer.category === VIGILANCIA_CATEGORY ? elements.editVigilanciaOfferingsContainer : elements.editTecnologiaOfferingsContainer;
+                        const container = offer.category === VIGILANCIA_CATEGORY 
+                            ? elements.editVigilanciaOfferingsContainer 
+                            : elements.editTecnologiaOfferingsContainer;
                         container.appendChild(createOfferingRow(offer.category, offer));
                     });
                 }
+                
+                const formElements = elements.editClientForm.querySelectorAll('input, select, button');
+                formElements.forEach(el => {
+                    const isCancelButton = el.id === 'close-edit-modal-btn' || el.id === 'cancel-edit-btn';
+                    if (!isCancelButton) {
+                        el.disabled = isWon;
+                    }
+                });
+
+                elements.editAddVigilanciaRowBtn.classList.toggle('hidden', isWon);
+                elements.editAddTecnologiaRowBtn.classList.toggle('hidden', isWon);
+                elements.editClientForm.querySelector('button[type="submit"]').classList.toggle('hidden', isWon);
+                
                 elements.editClientModal.classList.remove('hidden');
+
             } catch (error) {
                 console.error("Error opening edit modal:", error);
                 showConfirmationModal("Error", "No se pudieron cargar los datos del cliente.");
@@ -535,7 +624,11 @@ document.addEventListener("DOMContentLoaded", () => {
             card.className = "glass-card p-4 sm:p-6 flex flex-col gap-4 card-enter-animation client-card";
             card.dataset.clientId = client.id;
             const isPending = client.clientStatus === 'Ofrecido';
-            const actionButtonsHTML = isPending ? `<div class="flex flex-col sm:flex-row gap-2 mt-4"><button class="btn-primary mark-as-won-btn flex-1"><span class="btn-text">Marcar como Ganado</span></button><button class="btn-secondary edit-client-btn flex-1">Editar</button></div>` : `<div class="flex gap-2 mt-4"><button class="btn-secondary edit-client-btn w-full">Ver/Editar</button></div>`;
+            
+            const actionButtonsHTML = isPending 
+                ? `<div class="flex flex-col sm:flex-row gap-2 mt-4"><button class="btn-primary mark-as-won-btn flex-1"><span class="btn-text">Marcar como Ganado</span></button><button class="btn-secondary edit-client-btn flex-1">Editar</button></div>` 
+                : `<div class="flex gap-2 mt-4"><button class="btn-secondary edit-client-btn w-full">Ver Detalles</button></div>`;
+
             const offeringsByCat = (client.offerings || []).reduce((acc, offer) => {
                 (acc[offer.category] = acc[offer.category] || []).push(offer);
                 return acc;
@@ -547,7 +640,7 @@ document.addEventListener("DOMContentLoaded", () => {
         };
 
         const createOfferingDisplayItem = (offering) => {
-            return `<div class="offering-display-item"><div class="flex justify-between items-center mb-2"><p class="font-bold break-words">${offering.name}</p><span class="text-xs font-semibold px-2 py-0.5 rounded-full bg-slate-300 text-slate-800">${offering.status}</span></div><div class="grid grid-cols-2 gap-x-4 gap-y-1 text-xs"><span>Cantidad: <strong>${offering.quantity} und.</strong></span><span>Frecuencia: <strong>${offering.frequency} meses</strong></span><span>Costo Mensual: <strong>S/ ${Number(offering.cost || 0).toFixed(2)}</strong></span><span>Total: <strong class="total-amount">S/ ${Number(offering.total || 0).toFixed(2)}</strong></span></div></div>`;
+            return `<div class="offering-display-item"><div class="flex justify-between items-center mb-2"><p class="font-bold break-words">${offering.name}</p><span class="text-xs font-semibold px-2 py-0.5 rounded-full bg-slate-300 text-slate-800">${offering.status || 'Ofrecido'}</span></div><div class="grid grid-cols-2 gap-x-4 gap-y-1 text-xs"><span>Cantidad: <strong>${offering.quantity} und.</strong></span><span>Frecuencia: <strong>${offering.frequency} meses</strong></span><span>Costo Mensual: <strong>S/ ${Number(offering.cost || 0).toFixed(2)}</strong></span><span>Total: <strong class="total-amount">S/ ${Number(offering.total || 0).toFixed(2)}</strong></span></div></div>`;
         };
         
         const initializeForms = () => {
