@@ -61,7 +61,7 @@
             <div class="container mx-auto px-4 sm:px-6 lg:px-8 flex justify-between items-center py-4">
                 <h1 class="text-xl sm:text-2xl font-bold text-white">Gestor de Ofrecimientos</h1>
                 <div class="flex items-center gap-4">
-                    <span id="user-info" class="text-xs sm:text-sm text-slate-400 text-right"></span>
+                    <span id="user-info" class="text-xs sm:text-sm text-slate-300 font-semibold text-right"></span>
                     <button id="logout-button" class="btn-secondary">Cerrar Sesión</button>
                 </div>
             </div>
@@ -76,6 +76,18 @@
                             <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                                 <input type="text" id="client-name-input" placeholder="Nombre del Cliente o Empresa" required class="form-input">
                                 <input type="text" id="client-ruc-input" placeholder="RUC del Cliente" required class="form-input">
+                                <select id="client-contract-type" required class="form-input">
+                                    <option value="" disabled selected>Tipo de Contrato...</option>
+                                    <option value="NUEVO">NUEVO</option>
+                                    <option value="Renovacion">Renovación</option>
+                                </select>
+                                <select id="client-zone" required class="form-input">
+                                    <option value="" disabled selected>Zona...</option>
+                                    <option value="NORTE">NORTE</option>
+                                    <option value="SUR">SUR</option>
+                                    <option value="CENTRO">CENTRO</option>
+                                    <option value="MINAS">MINAS</option>
+                                </select>
                             </div>
                             
                             <div class="border-t border-slate-700 pt-4">
@@ -171,6 +183,18 @@
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <input type="text" id="edit-client-name-input" placeholder="Nombre del Cliente o Empresa" required class="form-input">
                     <input type="text" id="edit-client-ruc-input" placeholder="RUC del Cliente" required class="form-input">
+                    <select id="edit-client-contract-type" required class="form-input">
+                        <option value="" disabled>Tipo de Contrato...</option>
+                        <option value="NUEVO">NUEVO</option>
+                        <option value="Renovacion">Renovación</option>
+                    </select>
+                    <select id="edit-client-zone" required class="form-input">
+                        <option value="" disabled>Zona...</option>
+                        <option value="NORTE">NORTE</option>
+                        <option value="SUR">SUR</option>
+                        <option value="CENTRO">CENTRO</option>
+                        <option value="MINAS">MINAS</option>
+                    </select>
                 </div>
                 
                 <div class="border-t border-slate-700 pt-4">
