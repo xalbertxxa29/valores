@@ -225,8 +225,10 @@ document.addEventListener("DOMContentLoaded", () => {
                 let total = 0;
 
                 if (provisionMode === 'contrato') {
-                    total = cost * quantity;
+                    // Si es "Por todo el contrato", el total es igual al costo de provisión.
+                    total = cost;
                 } else { // 'mensual'
+                    // Lógica para cobro mensual: (costo * cantidad) * frecuencia
                     total = (cost * quantity) * frequency;
                 }
                 container.querySelector('.offering-total').value = `S/ ${total.toFixed(2)}`;
@@ -391,7 +393,8 @@ document.addEventListener("DOMContentLoaded", () => {
                 const provisionMode = row.querySelector('.offering-provision-mode').value;
                 let total = 0;
                 if (provisionMode === 'contrato') {
-                    total = cost * quantity;
+                    // Mismo cambio aquí para consistencia al guardar
+                    total = cost;
                 } else {
                     total = (cost * quantity) * frequency;
                 }
