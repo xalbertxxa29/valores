@@ -1,4 +1,4 @@
-const CACHE_NAME = 'gestor-ofrecimientos-v7'; // Nueva versión para forzar la actualización
+const CACHE_NAME = 'gestor-ofrecimientos-v8'; // Nueva versión para forzar la actualización
 const URLS_TO_CACHE = [
   '/',
   'index.html',

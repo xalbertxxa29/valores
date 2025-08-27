@@ -51,12 +51,15 @@ document.addEventListener("DOMContentLoaded", () => {
         { name: 'Cliente incognito', category: VIGILANCIA_CATEGORY },
         { name: 'Auditoría Interna', category: VIGILANCIA_CATEGORY },
         { name: 'Reporte de Criminalidad', category: VIGILANCIA_CATEGORY },
+        { name: 'Charlas de seguridad dirigida a EL CLIENTE (presencial)', category: VIGILANCIA_CATEGORY },
+        { name: 'Charlas de seguridad dirigida a EL CLIENTE (virtual)', category: VIGILANCIA_CATEGORY },
         { name: 'LiderControl', category: TECNOLOGIA_CATEGORY },
         { name: 'SmartPanics', category: TECNOLOGIA_CATEGORY },
         { name: 'Integración de plataformas GPS', category: TECNOLOGIA_CATEGORY },
         { name: 'Pulsadores de pánico', category: TECNOLOGIA_CATEGORY },
         { name: 'Configuración de analítica', category: TECNOLOGIA_CATEGORY },
-        { name: 'Ciberseguridad', category: TECNOLOGIA_CATEGORY }
+        { name: 'Ciberseguridad', category: TECNOLOGIA_CATEGORY },
+        { name: 'Propuesta de eficiencia con Tecnología', category: TECNOLOGIA_CATEGORY }
     ];
     
     // =================================================================================
